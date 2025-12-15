@@ -31,68 +31,29 @@ define('WP_DEBUG_DISPLAY', false);
 
 // a helper function to lookup "env_FILE", "env", then fallback
 if (!function_exists('getenv_docker')) {
-	// https://github.com/docker-library/wordpress/issues/588 (WP-CLI will load this file 2x)
-	function getenv_docker($env, $default) {
-		if ($fileEnv = getenv($env . '_FILE')) {
-			return rtrim(file_get_contents($fileEnv), "\r\n");
-		}
-		else if (($val = getenv($env)) !== false) {
-			return $val;
-		}
-		else {
-			return $default;
-		}
-	}
+    // https://github.com/docker-library/wordpress/issues/588 (WP-CLI will load this file 2x)
+    function getenv_docker($env, $default) {
+        if ($fileEnv = getenv($env . '_FILE')) {
+            return rtrim(file_get_contents($fileEnv), "\r\n");
+        }
+        else if (($val = getenv($env)) !== false) {
+            return $val;
+        }
+        else {
+            return $default;
+        }
+    }
 }
 
 /**
  * Docker image fallback values above are sourced from the official WordPress installation wizard:
  * https://github.com/WordPress/WordPress/blob/1356f6537220ffdc32b9dad2a6cdbe2d010b7a88/wp-admin/setup-config.php#L224-L238
- * (However, using "example username" and "example password" in your database is strongly discouraged.  Please use strong, random credentials!)
+ * (However, using "example username" and "example password" in your database is strongly discouraged. Please use strong, random credentials!)
  */
-
-
-/** DATABASES */
-// --- Primary database connection ---
-$primary_db = [
-	'DB_NAME'     => getenv_docker('WORDPRESS_DB_NAME', 'wordpress'),
-	'DB_USER'     => getenv_docker('WORDPRESS_DB_USER', 'wordpress_user'),
-	'DB_PASSWORD' => getenv_docker('WORDPRESS_DB_PASSWORD', 'wordpress_password'),
-	'DB_HOST'     => getenv_docker('WORDPRESS_DB_HOST', '192.168.100.6:3306'),
-];
-
-// --- Secondary (fallback) database connection ---
-$backup_db = [
-	'DB_NAME'     => getenv_docker('WORDPRESS_DB_NAME_BACKUP', 'wordpress_backup'),
-	'DB_USER'     => getenv_docker('WORDPRESS_DB_USER_BACKUP', 'wordpress_user'),
-	'DB_PASSWORD' => getenv_docker('WORDPRESS_DB_PASSWORD_BACKUP', 'wordpress_password'),
-	'DB_HOST'     => getenv_docker('WORDPRESS_DB_HOST_BACKUP', '192.168.100.7:3306'),
-];
-
-// --- Test primary connection ---
-$mysqli = @new mysqli(
-	$primary_db['DB_HOST'],
-	$primary_db['DB_USER'],
-	$primary_db['DB_PASSWORD'],
-	$primary_db['DB_NAME']
-);
-
-if ($mysqli->connect_errno) {
-	error_log("Primary DB connection failed: " . $mysqli->connect_error);
-	error_log("Switching to backup database...");
-
-	// Use backup DB
-	define('DB_NAME',     $backup_db['DB_NAME']);
-	define('DB_USER',     $backup_db['DB_USER']);
-	define('DB_PASSWORD', $backup_db['DB_PASSWORD']);
-	define('DB_HOST',     $backup_db['DB_HOST']);
-} else {
-	// Use primary DB
-	define('DB_NAME',     $primary_db['DB_NAME']);
-	define('DB_USER',     $primary_db['DB_USER']);
-	define('DB_PASSWORD', $primary_db['DB_PASSWORD']);
-	define('DB_HOST',     $primary_db['DB_HOST']);
-}
+define('DB_NAME', getenv_docker('WORDPRESS_DB_NAME', 'wordpress_db'));
+define('DB_USER', getenv_docker('WORDPRESS_DB_USER', 'wp_user'));
+define('DB_PASSWORD', getenv_docker('WORDPRESS_DB_PASSWORD', 'wphaslo'));
+define('DB_HOST', getenv_docker('WORDPRESS_DB_HOST', 'proxysql:3306')); 
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', getenv_docker('WORDPRESS_DB_CHARSET', 'utf8mb4') );
@@ -111,14 +72,14 @@ define( 'DB_COLLATE', getenv_docker('WORDPRESS_DB_COLLATE', '') );
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',         getenv_docker('WORDPRESS_AUTH_KEY',         '68af1c25eb7bbae5f1c6362be56430fc0935d52b') );
-define( 'SECURE_AUTH_KEY',  getenv_docker('WORDPRESS_SECURE_AUTH_KEY',  '62633490ecb0e56d433152f1b477b0d3988c7f20') );
-define( 'LOGGED_IN_KEY',    getenv_docker('WORDPRESS_LOGGED_IN_KEY',    'facfed3bc5d4da860324f97912b4ea6af79f696d') );
-define( 'NONCE_KEY',        getenv_docker('WORDPRESS_NONCE_KEY',        '4022cda3032bf339c73d6e14340d1b69bb98e792') );
-define( 'AUTH_SALT',        getenv_docker('WORDPRESS_AUTH_SALT',        '8ca4eefdd2e270f7406a6221972871618e4ee197') );
+define( 'AUTH_KEY', getenv_docker('WORDPRESS_AUTH_KEY', '68af1c25eb7bbae5f1c6362be56430fc0935d52b') );
+define( 'SECURE_AUTH_KEY', getenv_docker('WORDPRESS_SECURE_AUTH_KEY', '62633490ecb0e56d433152f1b477b0d3988c7f20') );
+define( 'LOGGED_IN_KEY', getenv_docker('WORDPRESS_LOGGED_IN_KEY', 'facfed3bc5d4da860324f97912b4ea6af79f696d') );
+define( 'NONCE_KEY', getenv_docker('WORDPRESS_NONCE_KEY', '4022cda3032bf339c73d6e14340d1b69bb98e792') );
+define( 'AUTH_SALT', getenv_docker('WORDPRESS_AUTH_SALT', '8ca4eefdd2e270f7406a6221972871618e4ee197') );
 define( 'SECURE_AUTH_SALT', getenv_docker('WORDPRESS_SECURE_AUTH_SALT', 'ea06ae90e4966c5834e183ee4ad846293a5eee57') );
-define( 'LOGGED_IN_SALT',   getenv_docker('WORDPRESS_LOGGED_IN_SALT',   '445d8020497613024b296648882d3b3bbe2b4b26') );
-define( 'NONCE_SALT',       getenv_docker('WORDPRESS_NONCE_SALT',       'c60aa5a31bdabb032771519506830e181f6a0990') );
+define( 'LOGGED_IN_SALT', getenv_docker('WORDPRESS_LOGGED_IN_SALT', '445d8020497613024b296648882d3b3bbe2b4b26') );
+define( 'NONCE_SALT', getenv_docker('WORDPRESS_NONCE_SALT', 'c60aa5a31bdabb032771519506830e181f6a0990') );
 // (See also https://wordpress.stackexchange.com/a/152905/199287)
 
 /**#@-*/
@@ -156,19 +117,19 @@ define( 'WP_DEBUG', !!getenv_docker('WORDPRESS_DEBUG', '') );
 // If we're behind a proxy server and using HTTPS, we need to alert WordPress of that fact
 // see also https://wordpress.org/support/article/administration-over-ssl/#using-a-reverse-proxy
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
-	$_SERVER['HTTPS'] = 'on';
+    $_SERVER['HTTPS'] = 'on';
 }
 // (we include this by default because reverse proxying is extremely common in container environments)
 
 if ($configExtra = getenv_docker('WORDPRESS_CONFIG_EXTRA', '')) {
-	eval($configExtra);
+    eval($configExtra);
 }
 
 /* That's all, stop editing! Happy publishing. */
 
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', __DIR__ . '/' );
+    define( 'ABSPATH', __DIR__ . '/' );
 }
 
 /** Sets up WordPress vars and included files. */
