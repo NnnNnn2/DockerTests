@@ -1,0 +1,21 @@
+# Na VM2: Wejdź do kontenera MySQL Mastera
+docker exec -it mysql_master mysql -u root -ptoor
+
+-- Uruchom w konsoli MySQL na VM2
+CREATE USER 'repl_user'@'IP_VM3' IDENTIFIED BY 'repl_password';
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'IP_VM3';
+FLUSH PRIVILEGES;
+
+-- Uruchom w konsoli MySQL na VM2
+FLUSH TABLES WITH READ LOCK;
+SHOW MASTER STATUS;
+
+Zanotuj te wartości:
+
+    File: (np. mysql-bin.000003)
+
+    Position: (np. 678)
+
+-- Uruchom w konsoli MySQL na VM2
+UNLOCK TABLES;
+exit
