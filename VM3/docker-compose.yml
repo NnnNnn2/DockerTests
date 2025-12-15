@@ -1,0 +1,44 @@
+# docker-compose.yml dla VM3 (Slave)
+
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_slave
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: wordpress_user
+      MYSQL_PASSWORD: wordpress_password
+      # ARGUMENTY DLA REPLIKACJI
+    command: --server-id=2
+    networks:
+      - wordpress_network
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_slave_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin_slave
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - wordpress_network
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ROOT_PASSWORD: toor
+
+volumes:
+  mysql_slave_data:
+
+networks:
+  wordpress_network:
+    driver: bridge
