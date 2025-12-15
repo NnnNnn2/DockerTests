@@ -1,0 +1,1 @@
+docker exec -it proxysql_ha mysql -u admin -padmin -h 127.0.0.1 -P 6032
