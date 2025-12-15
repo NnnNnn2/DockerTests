@@ -3,7 +3,7 @@ version: '3.8'
 services:
   #  ProxySQL
   proxysql:
-    image: datacharmer/proxysql
+    image: proxysql/proxysql
     container_name: proxysql_ha
     restart: always
     # Mapowanie portu 3306 dla WordPressa i 6032 dla administracji ProxySQL
