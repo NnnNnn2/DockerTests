@@ -20,7 +20,7 @@ VALUES ('wordpress_user', 'wordpress_password', 10);
 -- Mówimy ProxySQL: Writerzy są w 10, czytelnicy/zapasowi są w 20.
 -- Użyj wbudowanej funkcji 'mysql_slave_status' do monitorowania replikacji.
 INSERT INTO mysql_replication_hostgroups (writer_hostgroup, reader_hostgroup, check_type)
-VALUES (10, 20, 'mysql_server_read_only');
+VALUES (10, 20, 'read_only');
 
 -- Opcjonalnie: Ustawienie limitu opóźnienia replikacji (seconds_behind_master).
 -- Jeśli Slave opóźni się o 60 sekund, ProxySQL przestanie wysyłać do niego ruch (w roli Readera).
