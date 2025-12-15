@@ -1,0 +1,36 @@
+# Uruchom poniższą komendę na VM1, aby połączyć się z kontenerem ProxySQL:
+docker exec -it proxysql_ha mysql -u admin -padmin -h 127.0.0.1 -P 6032
+
+# Dodanie IP serwerów MySQL na VM2 i VM3
+
+-- 1. Dodanie Mastera (VM2) do grupy 10 (Writer)
+INSERT INTO mysql_servers (hostgroup_id, hostname, port) 
+VALUES (10, '192.168.100.6', 3306);
+
+-- 2. Dodanie Slave'a (VM3) do grupy 20 (Reader/Fallback)
+INSERT INTO mysql_servers (hostgroup_id, hostname, port) 
+VALUES (20, '192.168.100.7', 3306);
+
+-- 3. Ustawienie użytkownika WordPressa. 
+-- Domyślnie ProxySQL kieruje ruch do hostgroup 10 (Master)
+INSERT INTO mysql_users (username, password, default_hostgroup) 
+VALUES ('wordpress_user', 'wordpress_password', 10);
+
+-- 4. Konfiguracja przełączania awaryjnego i replikacji
+-- Mówimy ProxySQL: Writerzy są w 10, czytelnicy/zapasowi są w 20.
+-- Użyj wbudowanej funkcji 'mysql_slave_status' do monitorowania replikacji.
+INSERT INTO mysql_replication_hostgroups (writer_hostgroup, reader_hostgroup, check_type)
+VALUES (10, 20, 'mysql_slave_status');
+
+-- Opcjonalnie: Ustawienie limitu opóźnienia replikacji (seconds_behind_master).
+-- Jeśli Slave opóźni się o 60 sekund, ProxySQL przestanie wysyłać do niego ruch (w roli Readera).
+UPDATE global_variables SET variable_value='60' WHERE variable_name='mysql-monitor_replication_lag_threshold';
+
+LOAD MYSQL SERVERS TO RUNTIME;
+LOAD MYSQL USERS TO RUNTIME;
+LOAD MYSQL VARIABLES TO RUNTIME;
+SAVE MYSQL SERVERS TO DISK;
+SAVE MYSQL USERS TO DISK;
+SAVE MYSQL VARIABLES TO DISK;
+
+exit
