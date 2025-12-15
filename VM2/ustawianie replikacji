@@ -2,7 +2,7 @@
 docker exec -it mysql_master mysql -u root -ptoor
 
 -- Uruchom w konsoli MySQL na VM2
-CREATE USER 'repl_user'@'IP_VM3' IDENTIFIED BY 'repl_password';
+CREATE USER 'repl_user'@'IP_VM3' IDENTIFIED WITH mysql_native_password BY 'repl_password';
 GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'IP_VM3';
 FLUSH PRIVILEGES;
 
