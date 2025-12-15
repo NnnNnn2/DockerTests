@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: 192.168.100.6:3306
+      WORDPRESS_DB_USER: wordpress_user
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_db
+      WORDPRESS_DB_HOST_BACKUP: 192.168.100.7:3306
+      WORDPRESS_DB_USER_BACKUP: wordpress_user
+      WORDPRESS_DB_PASSWORD_BACKUP: wordpress_password
+      WORDPRESS_DB_NAME_BACKUP: wordpress_db
+      WORDPRESS_DEBUG: true
+    volumes:
+      - ./wordpress:/var/www/html
+    networks:
+      - wordpress_network
+
+volumes:
+  wp_data:
+
+networks:
+  wordpress_network:
+    driver: bridge
