@@ -1,0 +1,26 @@
+# Na VM3: Wejdź do kontenera MySQL Slave'a
+docker exec -it mysql_slave mysql -u root -ptoor
+
+-- Uruchom w konsoli MySQL na VM3
+CHANGE MASTER TO
+    MASTER_HOST='IP_VM2',
+    MASTER_USER='repl_user',
+    MASTER_PASSWORD='repl_password',
+    MASTER_LOG_FILE='ZANOTOWANY_FILE', -- np. 'mysql-bin.000003'
+    MASTER_LOG_POS=ZANOTOWANA_POSITION; -- np. 678
+
+-- Uruchom w konsoli MySQL na VM3
+START SLAVE;
+
+-- Uruchom w konsoli MySQL na VM3
+SHOW SLAVE STATUS\G
+
+Najważniejsze wartości, na które musisz zwrócić uwagę to:
+
+    Slave_IO_Running: Yes
+
+    Slave_SQL_Running: Yes
+
+    Seconds_Behind_Master: 0 (lub bardzo niska liczba)
+
+Jeśli obie flagi mają wartość Yes i opóźnienie jest bliskie zeru, replikacja działa poprawnie!
