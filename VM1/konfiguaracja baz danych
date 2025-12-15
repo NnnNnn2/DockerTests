@@ -34,3 +34,7 @@ SAVE MYSQL USERS TO DISK;
 SAVE MYSQL VARIABLES TO DISK;
 
 exit
+
+
+-- Na koniec sprawdź status serwerów
+docker exec -it proxysql_ha mysql -u admin -padmin -h 127.0.0.1 -P 6032 -e "SELECT hostgroup_id, hostname, status, weight FROM runtime_mysql_servers;"
