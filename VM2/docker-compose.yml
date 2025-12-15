@@ -1,25 +1,29 @@
+# docker-compose.yml dla VM2 (Master)
+
 version: '3.8'
 
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_db
+    container_name: mysql_master
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: toor
       MYSQL_DATABASE: wordpress_db
       MYSQL_USER: wordpress_user
       MYSQL_PASSWORD: wordpress_password
+    # ARGUMENTY DLA REPLIKACJI
+    command: --server-id=1 --log-bin=mysql-bin --binlog-do-db=wordpress_db
     networks:
       - wordpress_network
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_master_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: phpmyadmin
+    container_name: phpmyadmin_master
     restart: always
     depends_on:
       - mysql
@@ -33,7 +37,7 @@ services:
       PMA_ROOT_PASSWORD: toor
 
 volumes:
-  mysql_data:
+  mysql_master_data:
 
 networks:
   wordpress_network:
