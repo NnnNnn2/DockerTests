@@ -1,30 +1,48 @@
 version: '3.8'
 
 services:
+  #  ProxySQL
+  proxysql:
+    image: datacharmer/proxysql
+    container_name: proxysql_ha
+    restart: always
+    # Mapowanie portu 3306 dla WordPressa i 6032 dla administracji ProxySQL
+    ports:
+      - "3306:3306"
+      - "6032:6032"
+    # Adresy IP serwerów Master i Slave (VM2 i VM3) zostaną dodane przez interfejs 6032
+    networks:
+      - wordpress_network
+    volumes:
+      # Zachowaj konfigurację ProxySQL między restartami
+      - proxysql_data:/var/lib/proxysql
+
+  # WordPress
   wordpress:
     image: wordpress:latest
     container_name: wordpress_app
     restart: always
     ports:
+      # Zmieniam z powrotem na 8080:80, jak miałeś w oryginale
       - "8080:80"
     environment:
-      WORDPRESS_DB_HOST: 192.168.100.6:3306
+      #  DB_HOST wskazuje teraz na kontener ProxySQL
+      WORDPRESS_DB_HOST: proxysql:3306 
       WORDPRESS_DB_USER: wordpress_user
       WORDPRESS_DB_PASSWORD: wordpress_password
       WORDPRESS_DB_NAME: wordpress_db
-      WORDPRESS_DB_HOST_BACKUP: 192.168.100.7:3306
-      WORDPRESS_DB_USER_BACKUP: wordpress_user
-      WORDPRESS_DB_PASSWORD_BACKUP: wordpress_password
-      WORDPRESS_DB_NAME_BACKUP: wordpress_db
       WORDPRESS_DEBUG: true
     volumes:
       - ./wordpress:/var/www/html
     networks:
       - wordpress_network
 
-volumes:
-  wp_data:
-
 networks:
   wordpress_network:
     driver: bridge
+
+volumes:
+  wordpress_data:
+    driver: local
+  proxysql_data:
+    driver: local
