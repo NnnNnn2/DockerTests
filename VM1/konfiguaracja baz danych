@@ -25,6 +25,8 @@ VALUES (10, 20, 'read_only');
 -- Opcjonalnie: Ustawienie limitu opóźnienia replikacji (seconds_behind_master).
 -- Jeśli Slave opóźni się o 60 sekund, ProxySQL przestanie wysyłać do niego ruch (w roli Readera).
 UPDATE global_variables SET variable_value='60' WHERE variable_name='mysql-monitor_replication_lag_threshold';
+-- Ustawianie portu do nasłuchiwania z Wordpressa
+UPDATE global_variables SET variable_value='0.0.0.0:3306' WHERE variable_name='mysql-interfaces';
 
 LOAD MYSQL SERVERS TO RUNTIME;
 LOAD MYSQL USERS TO RUNTIME;
