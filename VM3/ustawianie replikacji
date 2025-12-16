@@ -24,3 +24,10 @@ Najważniejsze wartości, na które musisz zwrócić uwagę to:
     Seconds_Behind_Master: 0 (lub bardzo niska liczba)
 
 Jeśli obie flagi mają wartość Yes i opóźnienie jest bliskie zeru, replikacja działa poprawnie!
+
+-- Utwórz usera dla ProxySQL
+CREATE USER 'monitor'@'192.168.100.4' IDENTIFIED WITH mysql_native_password BY 'monitor';
+GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'monitor'@'192.168.100.4';
+FLUSH PRIVILEGES;
+
+exit
