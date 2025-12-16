@@ -30,7 +30,7 @@ Jeśli obie flagi mają wartość Yes i opóźnienie jest bliskie zeru, replikac
 
 -- Utwórz usera dla ProxySQL
 CREATE USER 'monitor'@'192.168.100.4' IDENTIFIED WITH mysql_native_password BY 'monitor';
-GRANT PROCESS, REPLICATION, SUPER CLIENT ON *.* TO 'monitor'@'192.168.100.4';
+GRANT PROCESS, REPLICATION, SUPER, CLIENT ON *.* TO 'monitor'@'192.168.100.4';
 FLUSH PRIVILEGES;
 
 exit
