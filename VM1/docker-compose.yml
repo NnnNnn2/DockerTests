@@ -19,15 +19,14 @@ services:
 
   # WordPress
   wordpress:
+  wordpress:
     image: wordpress:latest
     container_name: wordpress_app
     restart: always
     ports:
-      # Zmieniam z powrotem na 8080:80, jak miałeś w oryginale
       - "8080:80"
     environment:
-      #  DB_HOST wskazuje teraz na kontener ProxySQL
-      WORDPRESS_DB_HOST: proxysql:3306 
+      WORDPRESS_DB_HOST: proxysql:3306
       WORDPRESS_DB_USER: wordpress_user
       WORDPRESS_DB_PASSWORD: wordpress_password
       WORDPRESS_DB_NAME: wordpress_db
@@ -36,6 +35,9 @@ services:
       - ./wordpress:/var/www/html
     networks:
       - wordpress_network
+    
+    depends_on:
+      - proxysql
 
 networks:
   wordpress_network:
