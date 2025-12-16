@@ -7,8 +7,8 @@ docker exec -it proxysql_ha mysql -u admin -padmin -h 127.0.0.1 -P 6032
 INSERT INTO mysql_servers (hostgroup_id, hostname, port) 
 VALUES (10, '192.168.100.6', 3306);
 -- oraz przypadku dla zapasowej bazy
-INSERT INTO mysql_servers (hostgroup_id, hostname, port, weight)
-VALUES (10, '192.168.100.7', 3306, 0);
+INSERT INTO mysql_servers (hostgroup_id, hostname, port)
+VALUES (10, '192.168.100.7', 3306);
 
 -- 2. Dodanie Slave'a (VM3) do grupy 20 (Reader/Fallback)
 INSERT INTO mysql_servers (hostgroup_id, hostname, port) 
