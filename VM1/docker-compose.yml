@@ -35,7 +35,6 @@ services:
       - ./wordpress:/var/www/html
     networks:
       - wordpress_network
-    
     depends_on:
       - proxysql
 
