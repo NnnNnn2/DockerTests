@@ -9,6 +9,9 @@ CHANGE MASTER TO
     MASTER_LOG_FILE='ZANOTOWANY_FILE', -- np. 'mysql-bin.000003'
     MASTER_LOG_POS=ZANOTOWANA_POSITION; -- np. 678
 
+-- Ustaw read_only na ON
+SET GLOBAL read_only = ON;
+
 -- Uruchom w konsoli MySQL na VM3
 START SLAVE;
 
