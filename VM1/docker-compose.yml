@@ -19,7 +19,6 @@ services:
 
   # WordPress
   wordpress:
-  wordpress:
     image: wordpress:latest
     container_name: wordpress_app
     restart: always
