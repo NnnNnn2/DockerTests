@@ -4,15 +4,12 @@ docker exec -it proxysql_ha mysql -u admin -padmin -h 127.0.0.1 -P 6032
 # Dodanie IP serwerów MySQL na VM2 i VM3
 
 -- 1. Dodanie Mastera (VM2) do grupy 10 (Writer)
-INSERT INTO mysql_servers (hostgroup_id, hostname, port, weight) 
-VALUES (10, '192.168.100.6', 3306, 0);
--- oraz przypadku dla zapasowej bazy
-INSERT INTO mysql_servers (hostgroup_id, hostname, port)
-VALUES (10, '192.168.100.7', 3306);
-
--- 2. Dodanie Slave'a (VM3) do grupy 20 (Reader/Fallback)
 INSERT INTO mysql_servers (hostgroup_id, hostname, port) 
-VALUES (20, '192.168.100.7', 3306);
+VALUES (10, '192.168.100.6', 3306);
+
+-- 2. Dodanie Slave'a (VM3) do grupy 10, proxySQL przenisie go do 20 (Reader/Fallback)
+INSERT INTO mysql_servers (hostgroup_id, hostname, port) 
+VALUES (10, '192.168.100.7', 3306);
 
 -- 3. Ustawienie użytkownika WordPressa. 
 -- Domyślnie ProxySQL kieruje ruch do hostgroup 10 (Master)
