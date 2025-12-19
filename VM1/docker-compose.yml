@@ -25,7 +25,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      WORDPRESS_DB_HOST: proxysql:6033
+      WORDPRESS_DB_HOST: proxysql:3306
       WORDPRESS_DB_USER: wordpress_user
       WORDPRESS_DB_PASSWORD: wordpress_password
       WORDPRESS_DB_NAME: wordpress_db
