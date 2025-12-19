@@ -2,7 +2,7 @@
 # !!! UWAGA, UMIESC TEN PLIK W KONTENERZE ProxySQL W /usr/local/bin !!!
 # nastepnie uruchom te komendy
 # chmod +x /usr/local/bin/failover_safe.sh
-# chown proxysql:proxysql /use/local/bin/failover_safe.sh
+# chown proxysql:proxysql /usr/local/bin/failover_safe.sh
 
 
 # --- KONFIGURACJA ---
