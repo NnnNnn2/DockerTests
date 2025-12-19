@@ -26,12 +26,18 @@ VALUES (10, 20, 'read_only');
 -- Jeśli Slave opóźni się o 60 sekund, ProxySQL przestanie wysyłać do niego ruch (w roli Readera).
 UPDATE global_variables SET variable_value='60' WHERE variable_name='mysql-monitor_replication_lag_threshold';
 
+-- 5. Wstawienie do schedulera naszego skryptu wyłączającego read_only VM3 w przypadku awarii VM2
+INSERT INTO scheduler (id, active, interval_ms, filename) 
+VALUES (1, 1, 2000, '/usr/local/bin/failover_safe.sh');
+
 LOAD MYSQL SERVERS TO RUNTIME;
 LOAD MYSQL USERS TO RUNTIME;
 LOAD MYSQL VARIABLES TO RUNTIME;
 SAVE MYSQL SERVERS TO DISK;
 SAVE MYSQL USERS TO DISK;
 SAVE MYSQL VARIABLES TO DISK;
+LOAD SCHEDULER TO RUNTIME;
+SAVE SCHEDULER TO DISK;
 
 exit
 
